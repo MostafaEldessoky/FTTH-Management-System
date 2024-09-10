@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  users-db:
+    image: postgres:latest
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - 5432:5432
+    env_file:
+      - db.env
+
+  cahe-redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+
+  users-app:
+    build: .
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/app
+    env_file:
+      - secrets.env
+    depends_on:
+      - users-db
+      - cahe-redis
+
+volumes:
+  db_data:
